@@ -1,0 +1,11 @@
+[package]
+name = "base_hack"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mysql = "25.0.1"
+dotenv = "0.15.0"
+web3 = "0.19.0"
+tokio = { version = "1", features = ["full"] }
+hex = "0.4.3"

@@ -1,0 +1,10 @@
+/mnt/c/Users/Shour/OneDrive/Desktop/Aaddy_Codes/Base Hack/base_hack/target/debug/deps/libsecp256k1_sys-6b330affced4f449.rmeta: /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/lib.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/macros.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/types.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/recovery.rs
+
+/mnt/c/Users/Shour/OneDrive/Desktop/Aaddy_Codes/Base Hack/base_hack/target/debug/deps/libsecp256k1_sys-6b330affced4f449.rlib: /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/lib.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/macros.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/types.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/recovery.rs
+
+/mnt/c/Users/Shour/OneDrive/Desktop/Aaddy_Codes/Base Hack/base_hack/target/debug/deps/secp256k1_sys-6b330affced4f449.d: /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/lib.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/macros.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/types.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/recovery.rs
+
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/lib.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/macros.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/types.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/secp256k1-sys-0.8.1/src/recovery.rs:

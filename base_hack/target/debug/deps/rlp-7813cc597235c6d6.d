@@ -1,0 +1,12 @@
+/mnt/c/Users/Shour/OneDrive/Desktop/Aaddy_Codes/Base Hack/base_hack/target/debug/deps/librlp-7813cc597235c6d6.rmeta: /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/lib.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/error.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/impls.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/rlpin.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/stream.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/traits.rs
+
+/mnt/c/Users/Shour/OneDrive/Desktop/Aaddy_Codes/Base Hack/base_hack/target/debug/deps/librlp-7813cc597235c6d6.rlib: /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/lib.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/error.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/impls.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/rlpin.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/stream.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/traits.rs
+
+/mnt/c/Users/Shour/OneDrive/Desktop/Aaddy_Codes/Base Hack/base_hack/target/debug/deps/rlp-7813cc597235c6d6.d: /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/lib.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/error.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/impls.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/rlpin.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/stream.rs /home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/traits.rs
+
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/lib.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/error.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/impls.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/rlpin.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/stream.rs:
+/home/maverick/.cargo/registry/src/index.crates.io-6f17d22bba15001f/rlp-0.5.2/src/traits.rs:

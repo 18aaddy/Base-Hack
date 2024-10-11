@@ -1,0 +1,12 @@
+C:\Users\Shour\OneDrive\Desktop\Aaddy_Codes\Base Hack\base_hack\target\debug\deps\libuuid-2947d66ecc260a51.rmeta: C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\lib.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\builder.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\error.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\parser.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\fmt.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\timestamp.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\external.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\macros.rs
+
+C:\Users\Shour\OneDrive\Desktop\Aaddy_Codes\Base Hack\base_hack\target\debug\deps\uuid-2947d66ecc260a51.d: C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\lib.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\builder.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\error.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\parser.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\fmt.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\timestamp.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\external.rs C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\macros.rs
+
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\lib.rs:
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\builder.rs:
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\error.rs:
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\parser.rs:
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\fmt.rs:
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\timestamp.rs:
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\external.rs:
+C:\Users\Shour\.cargo\registry\src\index.crates.io-6f17d22bba15001f\uuid-1.10.0\src\macros.rs:
