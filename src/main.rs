@@ -13,7 +13,7 @@ async fn main() {
 
     let result = fetcher::fetch_transaction_logs(address, 1).await;
     match result {
-        Ok(r) => match database::writer::write_to_db(r.clone(), 1).await {
+        Ok(r) => match database::writer::write_to_db(r.clone(), 1, address).await {
             Ok(_) => println!("Number of logs: {}", r.len()),
             Err(e) => println!("Error: {}", e),
         },
