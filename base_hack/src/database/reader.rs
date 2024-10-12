@@ -1,45 +1,22 @@
-// use mysql::*;
-// use mysql::prelude::*;
-// use std::env;
-// use dotenv::dotenv;
+use mongodb::{options::ClientOptions, Client};
+use web3::types::Log;
 
-// fn main() {
-//     // Load environment variables from a .env file
-//     dotenv().ok();
+use crate::utils::chain_from_chain_id;
 
-//     // Get the connection URL from environment variables
-//     let database_url = env::var("DATABASE_URL")
-//         .expect("DATABASE_URL must be set in .env file or environment");
+pub async fn read_from_db(logs: Vec<Log>, chain_id: u64) -> mongodb::error::Result<()> {
+    // Replace the URI string with your MongoDB deployment's connection string.
+    let uri = "mongodb+srv://aaddyrocks123:NppGYkdW5FzLA35I@cluster0.svbav.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // or your MongoDB Atlas connection string
+    
+    // Configure the client options NppGYkdW5FzLA35I
+    let client_options = ClientOptions::parse(uri).await?;
+    
+    // Create the MongoDB client
+    let client = Client::with_options(client_options)?;
 
-//     // Create a connection pool
-//     let pool = Pool::new(database_url).expect("Failed to create MySQL connection pool");
+    let db = client.database("Transfer_Logs");
+    let collection = db.collection::<Log>(format!("{:?}_logs", chain_from_chain_id(chain_id)).as_str());
 
-//     // Get a connection from the pool
-//     let mut conn = pool.get_conn().expect("Failed to get MySQL connection");
+    collection.insert_many(logs).await?;
 
-//     // Example: Create a table if it doesn't exist
-//     conn.query_drop(
-//         r"CREATE TABLE IF NOT EXISTS users (
-//             id INT PRIMARY KEY AUTO_INCREMENT,
-//             name VARCHAR(50),
-//             age INT
-//         )"
-//     ).expect("Failed to execute query");
-
-//     // Example: Insert some data
-//     conn.exec_drop(
-//         "INSERT INTO users (name, age) VALUES (:name, :age)",
-//         params! {
-//             "name" => "Alice",
-//             "age" => 30,
-//         }
-//     ).expect("Failed to insert data");
-
-//     // Example: Select data
-//     let users: Vec<(i32, String, i32)> = conn.query("SELECT id, name, age FROM users")
-//         .expect("Failed to fetch data");
-
-//     for (id, name, age) in users {
-//         println!("ID: {}, Name: {}, Age: {}", id, name, age);
-//     }
-// }
+    Ok(())
+}

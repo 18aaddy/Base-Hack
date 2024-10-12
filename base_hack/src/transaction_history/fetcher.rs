@@ -1,11 +1,17 @@
+use crate::utils::chain_from_chain_id;
 use dotenv::dotenv;
 use std::env;
 use std::str::FromStr;
 use web3::transports::Http;
 use web3::{
     types::{Address, FilterBuilder, Log, H160, H256},
-    Result, Web3, Error
+    Result, Web3
 };
+
+pub struct TransferLog {
+    logs: Vec<Log>,
+    chain_id: u64
+}
 
 pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<Vec<Log>> {
     dotenv().ok();
@@ -68,14 +74,7 @@ pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<V
     Ok(from_logs)   
 }
 
-pub fn chain_from_chain_id(chain_id: u64) -> Result<String> {
-    let network = match chain_id {
-        1 => "ETHEREUM",
-        8453 => "BASE",
-        _ => return Err(Error::from("Unknown network".to_string())),
-    };
-    Ok(network.to_string())
-}
+
 
 // pub async fn ethereum_fetch_transaction_logs(address: Address) -> Result<Vec<Log>> {
 //     dotenv().ok();

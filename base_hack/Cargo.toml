@@ -9,3 +9,6 @@ dotenv = "0.15.0"
 web3 = "0.19.0"
 tokio = { version = "1", features = ["full"] }
 hex = "0.4.3"
+mongodb = "3.1.0"
+serde = { version = "1.0.201", features = ["derive"] }
+serde_json = "1.0"
