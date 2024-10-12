@@ -1,11 +1,13 @@
 mod database;
 mod transaction_history;
 mod utils;
+mod price_feeds;
 
 use transaction_history::{erc20_token_identifier::{self, erc721_identifier}, logs_fetcher};
 use tokio;
 use web3::types::Address;
 use std::str::FromStr;
+use price_feeds::price_feed;
 
 #[tokio::main]
 async fn main() {

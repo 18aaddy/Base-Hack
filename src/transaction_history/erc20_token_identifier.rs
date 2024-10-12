@@ -12,11 +12,11 @@ use hex;
 
 #[derive(Serialize, Deserialize)]
 pub struct UserDetails {
-    chain_id: u64,
-    token_name: String,
-    token_symbol: String,
-    token_decimals: U256,
-    token_balance: U256,
+    pub chain_id: u64,
+    pub token_name: String,
+    pub token_symbol: String,
+    pub token_decimals: U256,
+    pub token_balance: U256,
 }
 
 pub async fn get_data_of_token_from_address_list(address_list: Vec<H160>, user_address: Address, chain_id: u64) -> web3::Result<Vec<UserDetails>> {

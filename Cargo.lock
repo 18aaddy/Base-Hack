@@ -136,6 +136,7 @@ dependencies = [
  "hex",
  "mongodb",
  "mysql",
+ "reqwest",
  "serde",
  "serde_json",
  "tokio",
