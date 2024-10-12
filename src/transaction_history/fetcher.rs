@@ -8,11 +8,63 @@ use web3::{
     Result, Web3
 };
 
+pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<Vec<Log>> {
+    dotenv().ok();
+    let chain = chain_from_chain_id(chain_id)?;
+    let env_var = format!("{}_RPC_URL", chain);
+
+    let rpc_url = env::var(env_var.clone()).expect(format!("{} not set", env_var).as_str());
+    let transport = Http::new(&rpc_url)?;
+    let web3 = Web3::new(transport);
+    let transfer_event_signature =
+        H256::from_str("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef")
+            .unwrap();
+
+    // Build filter for logs from the user address
+    let from_filter = FilterBuilder::default()
+        .topics(
+            Some(vec![transfer_event_signature]), // Filter by Transfer event signature
+            Some(vec![H256::from(address)]),      // From address
+            None,                                   // To address (optional)
+            None,                                   // Token amount or tokenId (optional)
+        )
+        .from_block(web3::types::BlockNumber::Earliest) // Starting block
+        .to_block(web3::types::BlockNumber::Latest)     // Up to latest block
+        .build();
+
+    // Build filter for logs to the user address
+    let to_filter = FilterBuilder::default()
+        .topics(
+            Some(vec![transfer_event_signature]), // Filter by Transfer event signature
+            None,                                   // From address (optional)
+            Some(vec![H256::from(address)]),       // To address
+            None,                                   // Token amount or tokenId (optional)
+        )
+        .from_block(web3::types::BlockNumber::Earliest) // Starting block
+        .to_block(web3::types::BlockNumber::Latest)     // Up to latest block
+        .build();
+
+    // Fetch logs concurrently
+    let from_logs_future = web3.eth().logs(from_filter);
+    let to_logs_future = web3.eth().logs(to_filter);
+
+    let (from_logs, to_logs) = tokio::join!(from_logs_future, to_logs_future);
+
+    // Handle potential errors
+    let from_logs = from_logs?;
+    let to_logs = to_logs?;
+
+    // Combine logs
+    let mut combined_logs = from_logs;
+    combined_logs.extend(to_logs); // Add to_logs to from_logs
+
+    Ok(combined_logs)
+}
 // pub struct TransferLog {
 //     logs: Vec<Log>,
 //     chain_id: u64
 // }
-
+/* 
 pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<Vec<Log>> {
     dotenv().ok();
     let chain = chain_from_chain_id(chain_id)?;
@@ -72,4 +124,4 @@ pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<V
     }
     from_logs.append(&mut to_logs);
     Ok(from_logs)   
-}
+}*/
