@@ -4,6 +4,11 @@ use futures::stream::TryStreamExt;
 
 use crate::utils::chain_from_chain_id;
 
+struct TransactionHistory {
+    transactions: Vec<Log>,
+    
+}
+
 pub async fn read_from_db(logs: Vec<Log>, chain_id: u64, address: Address) -> mongodb::error::Result<Vec<Log>> {
     // Replace the URI string with your MongoDB deployment's connection string.
     let uri = "mongodb+srv://aaddyrocks123:NppGYkdW5FzLA35I@cluster0.svbav.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // or your MongoDB Atlas connection string

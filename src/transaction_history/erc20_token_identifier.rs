@@ -1,10 +1,9 @@
 use crate::utils::chain_from_chain_id;
-use crate::database::reader;
 
 use serde::{Deserialize, Serialize};
-use web3::types::{Address, CallRequest, H160, U256};
+use web3::types::{Address, CallRequest, H160, U256, U64};
 use web3::transports::Http;
-use web3::Web3;
+use web3::{Result, Web3};
 use dotenv::dotenv;
 use std::env;
 use hex;
@@ -12,7 +11,7 @@ use hex;
 // use hex_literal::hex;
 
 #[derive(Serialize, Deserialize)]
-struct UserDetails {
+pub struct UserDetails {
     chain_id: u64,
     token_name: String,
     token_symbol: String,
@@ -81,6 +80,63 @@ pub async fn erc20_identifier(token_contract_address: Address, chain_id: u64) ->
 
     Ok((token_name.to_string(), token_symbol.to_string(), token_decimals))
 }
+
+pub async fn erc721_identifier(token_contract_address: Address, user_address: Address, chain_id: u64) -> Result<Vec<U256>>{
+    let (web3, from_address) = query_contract_with_signature(chain_id).await?;
+    
+    // ERC-20 function signatures
+    let name_signature = hex::decode("06fdde03").unwrap();      // Keccak-256 hash of 'name()'
+    let symbol_signature = hex::decode("95d89b41").unwrap();
+    let balance_signature = hex::decode("70a08231").unwrap();
+    let owner_of_id_signature = hex::decode("6352211e").unwrap();
+
+    // Query the token's name
+    let name_result = query_contract(&web3, token_contract_address, from_address, name_signature).await?;
+    let token_name = String::from_utf8_lossy(&name_result);
+    println!("Token name: {}", token_name);
+
+    // Query the token's symbol
+    let symbol_result = query_contract(&web3, token_contract_address, from_address, symbol_signature).await?;
+    let token_symbol = String::from_utf8_lossy(&symbol_result);
+    println!("Token symbol: {}", token_symbol);
+
+    // Query the token's symbol
+    let balance_result = query_contract(&web3, token_contract_address, from_address, balance_signature).await?;
+    let token_balance = U64::from(&balance_result[..]);
+    println!("Token balance: {}", token_balance);
+    
+    // Step 1: Get the balance of NFTs owned by the address
+    let balance_of_signature = "70a08231".to_string(); // Keccak-256 hash of 'balanceOf(address)'
+    let balance_request = CallRequest {
+        from: None,
+        to: Some(token_contract_address),
+        data: Some(web3::types::Bytes(hex::decode(balance_of_signature + hex::encode(user_address).as_str()).unwrap())),
+        ..Default::default()
+    };
+
+    let balance_result = web3.eth().call(balance_request, None).await?;
+    let balance = U256::from(balance_result.0.as_slice());
+
+    // Step 2: Retrieve each token ID owned by the address
+    let mut token_ids = Vec::new();
+    for index in 0..balance.as_u64() {
+        let token_of_owner_by_index_signature = "2f745c59"; // Keccak-256 hash of 'tokenOfOwnerByIndex(address,uint256)'
+        let token_request = CallRequest {
+            from: None,
+            to: Some(token_contract_address),
+            data: Some(web3::types::Bytes(hex::decode(format!("{}{}{:02x}", token_of_owner_by_index_signature, user_address.as_bytes().iter().map(|b| format!("{:02x}", b)).collect::<String>(), index)).unwrap())),
+            ..Default::default()
+        };
+
+        let token_result = web3.eth().call(token_request, None).await?;
+        let token_id = U256::from(token_result.0.as_slice());
+        token_ids.push(token_id);
+    }
+
+    println!("{:?}", token_ids);
+
+    Ok(token_ids)
+} 
 
 async fn query_contract_with_signature(chain_id: u64) -> web3::Result<(Web3<Http>, Address)> {
     dotenv().ok();

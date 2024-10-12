@@ -28,20 +28,20 @@ pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<V
     // // Optional: Filter logs by contract address (replace with your token's address)
     // let address: Address = Address::from_str("0x89CC5cD900dae8AfC788DCBAB11f5c2F5f660636").unwrap();
 
-    // Build a filter for the logs
-    let filter = FilterBuilder::default()
-        .topics(
-            Some(vec![transfer_event_signature]), // Filter by Transfer event signature
-            Some(vec![H256::from(address)]),                                 // From address (optional)
-            None,                                 // To address (optional)
-            None,                                 // Token amount or tokenId (optional)
-        )
-        .from_block(web3::types::BlockNumber::Earliest) // Starting block
-        .to_block(web3::types::BlockNumber::Latest) // Up to latest block
-        .build();
+    // // Build a filter for the logs
+    // let filter = FilterBuilder::default()
+    //     .topics(
+    //         Some(vec![transfer_event_signature]), // Filter by Transfer event signature
+    //         Some(vec![H256::from(address)]),                                 // From address (optional)
+    //         None,                                 // To address (optional)
+    //         None,                                 // Token amount or tokenId (optional)
+    //     )
+    //     .from_block(web3::types::BlockNumber::Earliest) // Starting block
+    //     .to_block(web3::types::BlockNumber::Latest) // Up to latest block
+    //     .build();
 
-    // Fetch logs
-    let mut from_logs: Vec<Log> = web3.eth().logs(filter).await?;
+    // // Fetch logs
+    // let mut from_logs: Vec<Log> = web3.eth().logs(filter).await?;
 
     let filter = FilterBuilder::default()
         .topics(
@@ -55,12 +55,12 @@ pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<V
         .build();
 
     // Fetch logs
-    let mut to_logs: Vec<Log> = web3.eth().logs(filter).await?;
+    let to_logs: Vec<Log> = web3.eth().logs(filter).await?;
 
     // println!("Logs: {:?}", logs);
 
     // Process logs
-    for log in from_logs.clone() {
+    for log in to_logs.clone() {
         let _from = H160::from_slice(&log.topics[1].as_bytes()[12..]);
         let _to = H160::from_slice(&log.topics[2].as_bytes()[12..]);
         let _value = web3::types::U256::from(log.data.0.as_slice());
@@ -70,6 +70,6 @@ pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<V
         //     from, to, value
         // );
     }
-    from_logs.append(&mut to_logs);
-    Ok(from_logs)   
+    // from_logs.append(&mut to_logs);
+    Ok(to_logs)   
 }
