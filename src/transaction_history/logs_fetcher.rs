@@ -13,9 +13,8 @@ use web3::{
 //     chain_id: u64
 // }
 
-pub async fn fetch_transaction_logs(address: Address, chain_id: u64) -> Result<Vec<Log>> {
+pub async fn fetch_transaction_logs(address: Address, chain: String) -> Result<Vec<Log>> {
     dotenv().ok();
-    let chain = chain_from_chain_id(chain_id)?;
     let env_var = format!("{}_RPC_URL", chain);
 
     let rpc_url = env::var(env_var.clone()).expect(format!("{} not set", env_var).as_str());

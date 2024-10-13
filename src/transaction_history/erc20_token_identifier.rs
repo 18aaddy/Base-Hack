@@ -1,5 +1,6 @@
 use crate::utils::chain_from_chain_id;
 
+use web3::ethabi::{Function, Param, ParamType, Token};
 use serde::{Deserialize, Serialize};
 use web3::types::{Address, CallRequest, H160, U256, U64};
 use web3::transports::Http;
@@ -12,21 +13,21 @@ use hex;
 
 #[derive(Serialize, Deserialize)]
 pub struct UserDetails {
-    pub chain_id: u64,
+    pub chain: String,
     pub token_name: String,
     pub token_symbol: String,
     pub token_decimals: U256,
     pub token_balance: U256,
 }
 
-pub async fn get_data_of_token_from_address_list(address_list: Vec<H160>, user_address: Address, chain_id: u64) -> web3::Result<Vec<UserDetails>> {
+pub async fn get_data_of_token_from_address_list(address_list: Vec<H160>, user_address: Address, chain: String) -> web3::Result<Vec<UserDetails>> {
     let mut user_details = Vec::<UserDetails>::new();
     for address in address_list {
-        let (token_name, token_symbol, token_decimals) = erc20_identifier(address, chain_id).await?;
-        let token_balance = erc20_balance_query(address, user_address, chain_id).await?;
+        let (token_name, token_symbol, token_decimals) = erc20_identifier(address, chain.clone()).await?;
+        let token_balance = erc20_balance_query(address, user_address, chain.clone()).await?;
         
         user_details.push(UserDetails {
-            chain_id: chain_id,
+            chain: chain.clone(),
             token_name: token_name,
             token_symbol: token_symbol,
             token_decimals: token_decimals,
@@ -36,8 +37,8 @@ pub async fn get_data_of_token_from_address_list(address_list: Vec<H160>, user_a
     Ok(user_details)
 }
 
-pub async fn erc20_balance_query(token_contract_address: Address, user_address: Address, chain_id: u64) -> web3::Result<U256> {
-    let (web3, from_address) = query_contract_with_signature(chain_id).await?;
+pub async fn erc20_balance_query(token_contract_address: Address, user_address: Address, chain: String) -> web3::Result<U256> {
+    let (web3, from_address) = query_contract_with_signature(chain).await?;
     // ERC-20 balanceOf function selector (keccak256 hash of "balanceOf(address)")
     let balance_of_signature = hex::decode("70a08231").unwrap(); 
 
@@ -54,9 +55,9 @@ pub async fn erc20_balance_query(token_contract_address: Address, user_address: 
     Ok(balance)
 }
 
-//TODO: Add function for querying ERC721 contracts
-pub async fn erc20_identifier(token_contract_address: Address, chain_id: u64) -> web3::Result<(String, String, U256)> {
-    let (web3, from_address) = query_contract_with_signature(chain_id).await?;
+
+pub async fn erc20_identifier(token_contract_address: Address, chain: String) -> web3::Result<(String, String, U256)> {
+    let (web3, from_address) = query_contract_with_signature(chain).await?;
     
     // ERC-20 function signatures
     let name_signature = hex::decode("06fdde03").unwrap();      // Keccak-256 hash of 'name()'
@@ -81,8 +82,8 @@ pub async fn erc20_identifier(token_contract_address: Address, chain_id: u64) ->
     Ok((token_name.to_string(), token_symbol.to_string(), token_decimals))
 }
 
-pub async fn erc721_identifier(token_contract_address: Address, user_address: Address, chain_id: u64) -> Result<Vec<U256>>{
-    let (web3, from_address) = query_contract_with_signature(chain_id).await?;
+pub async fn erc721_identifier(token_contract_address: Address, user_address: Address, chain: String) -> Result<Vec<U256>>{
+    let (web3, from_address) = query_contract_with_signature(chain).await?;
     
     // ERC-20 function signatures
     let name_signature = hex::decode("06fdde03").unwrap();      // Keccak-256 hash of 'name()'
@@ -138,9 +139,8 @@ pub async fn erc721_identifier(token_contract_address: Address, user_address: Ad
     Ok(token_ids)
 } 
 
-async fn query_contract_with_signature(chain_id: u64) -> web3::Result<(Web3<Http>, Address)> {
+async fn query_contract_with_signature(chain: String) -> web3::Result<(Web3<Http>, Address)> {
     dotenv().ok();
-    let chain = chain_from_chain_id(chain_id)?;
     let env_var = format!("{}_RPC_URL", chain);
 
     let rpc_url = env::var(env_var.clone()).expect(format!("{} not set", env_var).as_str());
@@ -165,4 +165,73 @@ async fn query_contract(web3: &Web3<Http>, contract_address: Address, from_addre
     // Perform the call
     let result = web3.eth().call(req, None).await?;
     Ok(result.0)
+}
+
+async fn query() -> web3::Result<()> {
+    // Replace with your appropriate RPC URL for Base, Optimism, or Ethereum
+    let rpc_url = "YOUR_RPC_URL";
+    let transport = Http::new(rpc_url)?;
+    let web3 = Web3::new(transport);
+
+    // Replace with the actual token contract address
+    let token_address: Address = "0xYourTokenContractAddress".parse().unwrap();
+
+    // Define the function signatures
+    let name_function = Function {
+        name: "name".to_string(),
+        inputs: vec![],
+        outputs: vec![Param {
+            name: "name".to_string(),
+            kind: ParamType::String,
+        }],
+        state_mutability: web3::ethabi::StateMutability::View,
+        constant: Some(true),
+    };
+
+    let symbol_function = Function {
+        name: "symbol".to_string(),
+        inputs: vec![],
+        outputs: vec![Param {
+            name: "symbol".to_string(),
+            kind: ParamType::String,
+        }],
+        constant: Some(true),
+    };
+
+    // Query token name
+    let name_data = name_function.encode_input(&[])?;
+    let name_result: Vec<Token> = web3.eth().call(
+        web3::types::CallRequest {
+            to: Some(token_address),
+            data: Some(name_data.into()),
+            ..Default::default()
+        },
+        None,
+    ).await?.into();
+
+    // Query token symbol
+    let symbol_data = symbol_function.encode_input(&[])?;
+    let symbol_result: Vec<Token> = web3.eth().call(
+        web3::types::CallRequest {
+            to: Some(token_address),
+            data: Some(symbol_data.into()),
+            ..Default::default()
+        },
+        None,
+    ).await?.into();
+
+    // Extract results
+    if let Some(Token::String(token_name)) = name_result.get(0) {
+        println!("Token Name: {}", token_name);
+    } else {
+        println!("Failed to retrieve token name.");
+    }
+
+    if let Some(Token::String(token_symbol)) = symbol_result.get(0) {
+        println!("Token Symbol: {}", token_symbol);
+    } else {
+        println!("Failed to retrieve token symbol.");
+    }
+
+    Ok(())
 }
