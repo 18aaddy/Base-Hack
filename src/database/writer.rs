@@ -5,8 +5,6 @@ use mongodb::{
 };
 use web3::{ethabi::Address, types::Log};
 
-// use crate::utils::chain_from_chain_id;
-
 pub async fn write_to_db(logs: Vec<Log>, chain: String, address: Address) -> mongodb::error::Result<()> {
     // Replace the URI string with your MongoDB deployment's connection string.
     let uri = "mongodb+srv://aaddyrocks123:NppGYkdW5FzLA35I@cluster0.svbav.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // or your MongoDB Atlas connection string

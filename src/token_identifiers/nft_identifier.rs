@@ -1,18 +1,17 @@
-use reqwest::Error;
-use serde::Deserialize;
-use web3::types::{Address};
-use crate::utils::chain_from_chain_id;
+use serde::{Deserialize, Serialize};
+use web3::types::Address;
 use std::env;
 use anyhow::{Context, Result};
 use dotenv::dotenv;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct AlchemyNftResponse {
     #[serde(rename = "ownedNfts")]
     pub owned_nfts: Vec<Nft>,
 }
 
-#[derive(Debug, Deserialize)]
+#[allow(private_interfaces)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct Nft {
     pub contract: Contract,
     pub id: NftId,
@@ -23,22 +22,22 @@ pub struct Nft {
     pub contract_metadata: ContractMetadata,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Contract {
     pub address: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct NftId {
     pub token_id: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Media {
     pub gateway: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct ContractMetadata {
     #[serde(rename = "contractDeployer")]
     pub contract_deployer: String,
@@ -50,11 +49,10 @@ struct ContractMetadata {
     pub token_type: String,
 }
 
-#[tokio::main]
-pub async fn fetch_nft_data(chain_id: u64, owner_address: Address) -> Result<AlchemyNftResponse> {
+pub async fn fetch_nft_data(chain: String, owner_address: Address) -> Result<AlchemyNftResponse> {
     dotenv().ok(); // Load environment variables from the .env file
 
-    let chain = chain_from_chain_id(chain_id).context("Failed to get chain")?;
+    // let chain = chain_from_chain_id(chain_id).context("Failed to get chain")?;
 
     let env_var = format!("{}_RPC_URL", chain);
     let rpc_url = env::var(&env_var)
@@ -79,23 +77,23 @@ pub async fn fetch_nft_data(chain_id: u64, owner_address: Address) -> Result<Alc
     }
 }
 
-pub fn print_nft_info(response: AlchemyNftResponse) {
-    for nft in response.owned_nfts {
-        println!("NFT Title: {}", nft.title.unwrap_or_else(|| "Unknown Title".to_string()));
-        println!("Contract Address: {}", nft.contract.address);
-        println!("Token ID: {}", nft.id.token_id);
+// pub fn print_nft_info(response: AlchemyNftResponse) {
+//     for nft in response.owned_nfts {
+//         println!("NFT Title: {}", nft.title.unwrap_or_else(|| "Unknown Title".to_string()));
+//         println!("Contract Address: {}", nft.contract.address);
+//         println!("Token ID: {}", nft.id.token_id);
         
-        // Print Contract Metadata
-        println!("Contract Deployer: {}", nft.contract_metadata.contract_deployer);
-        println!("Deployed Block Number: {}", nft.contract_metadata.deployed_block_number);
-        println!("Symbol: {}", nft.contract_metadata.symbol);
-        println!("Token Type: {}", nft.contract_metadata.token_type);
+//         // Print Contract Metadata
+//         println!("Contract Deployer: {}", nft.contract_metadata.contract_deployer);
+//         println!("Deployed Block Number: {}", nft.contract_metadata.deployed_block_number);
+//         println!("Symbol: {}", nft.contract_metadata.symbol);
+//         println!("Token Type: {}", nft.contract_metadata.token_type);
 
-        // Print Media URLs
-        for media in &nft.media {
-            println!("Media URL: {}", media.gateway);
-        }
+//         // Print Media URLs
+//         for media in &nft.media {
+//             println!("Media URL: {}", media.gateway);
+//         }
 
-        println!("\n-----------------------\n");
-    }
-}
+//         println!("\n-----------------------\n");
+//     }
+// }
