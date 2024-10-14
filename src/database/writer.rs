@@ -5,9 +5,7 @@ use mongodb::{
 };
 use web3::{ethabi::Address, types::Log};
 
-use crate::utils::chain_from_chain_id;
-
-pub async fn write_to_db(logs: Vec<Log>, chain_id: u64, address: Address) -> mongodb::error::Result<()> {
+pub async fn write_to_db(logs: Vec<Log>, chain: String, address: Address) -> mongodb::error::Result<()> {
     // Replace the URI string with your MongoDB deployment's connection string.
     let uri = "mongodb+srv://aaddyrocks123:NppGYkdW5FzLA35I@cluster0.svbav.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"; // or your MongoDB Atlas connection string
 
@@ -19,7 +17,7 @@ pub async fn write_to_db(logs: Vec<Log>, chain_id: u64, address: Address) -> mon
 
     let db = client.database("Transfer_Logs");
     let collection =
-        db.collection::<Log>(format!("{}_logs_{}", chain_from_chain_id(chain_id).unwrap(), address.to_string()).as_str());
+        db.collection::<Log>(format!("{}_logs_{}", chain, address.to_string()).as_str());
 
     let index_model = IndexModel::builder()
         .keys(doc! { "address": 1 })

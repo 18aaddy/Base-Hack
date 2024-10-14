@@ -1,4 +1,5 @@
-use crate::utils::chain_from_chain_id;
+use crate::portfolio_overview::erc20_portfolio_tracker::PortfolioRequest;
+
 use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 use web3::types::U64;
@@ -8,24 +9,42 @@ use web3::{
     types::{Address, FilterBuilder, Log, H160, H256, U256},
     Result, Web3
 };
-
-// pub struct TransferLog {
-//     logs: Vec<Log>,
-//     chain_id: u64
-// }
+use actix_web::{web, HttpResponse, Responder};
+use serde_json::json;
 
 #[derive(Serialize, Deserialize)]
 pub struct Transaction {
-    from: H160,
-    to: H160,
-    value: U256,
-    block_number: U64,
-    txn_hash: H256,
+    pub from: H160,
+    pub to: H160,
+    pub value: U256,
+    pub block_number: U64,
+    pub txn_hash: H256,
 }
 
-pub async fn fetch_transaction_history(address: Address, chain_id: u64) -> Result<Vec<Transaction>> {
+#[derive(Serialize)]
+pub struct TransactionResponse {
+    pub transaction_details: Option<Vec<Transaction>>,
+    pub err: Option<String>,
+}
+
+pub async fn web_route_transaction_history(request_body: web::Json<PortfolioRequest>) -> impl Responder {
+    let history = match fetch_transaction_history(request_body.user_address, request_body.chain.clone()).await {
+        Ok(h) => h,
+        Err(e) => return HttpResponse::BadRequest().json(json!({
+            "transaction_details": null,
+            "err": e.to_string(),
+        })),
+    };
+
+    let result = TransactionResponse{
+        transaction_details: Some(history),
+        err: None,
+    };
+
+    HttpResponse::Ok().json(result)
+}
+pub async fn fetch_transaction_history(address: Address, chain: String) -> Result<Vec<Transaction>> {
     dotenv().ok();
-    let chain = chain_from_chain_id(chain_id)?;
     let env_var = format!("{}_RPC_URL", chain);
 
     let rpc_url = env::var(env_var.clone()).expect(format!("{} not set", env_var).as_str());
