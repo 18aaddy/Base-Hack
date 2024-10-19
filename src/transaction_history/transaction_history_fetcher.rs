@@ -28,7 +28,8 @@ pub struct TransactionResponse {
 }
 
 pub async fn web_route_transaction_history(request_body: web::Json<PortfolioRequest>) -> impl Responder {
-    let history = match fetch_transaction_history(request_body.user_address, request_body.chain.clone()).await {
+    let address: Address = request_body.user_address.parse().expect("Invalid Address");
+    let history = match fetch_transaction_history(address, request_body.chain.clone()).await {
         Ok(h) => h,
         Err(e) => return HttpResponse::BadRequest().json(json!({
             "transaction_details": null,

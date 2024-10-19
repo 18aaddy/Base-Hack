@@ -7,7 +7,8 @@ use crate::token_identifiers::nft_identifier::{self, AlchemyNftResponse};
 use crate::portfolio_overview::erc20_portfolio_tracker::PortfolioRequest;
 
 pub async fn web_route_erc721(request_body: web::Json<PortfolioRequest>) -> impl Responder {
-    let nft_details = match get_nft_portfolio_data(request_body.user_address, request_body.chain.clone()).await {
+    let address: Address = request_body.user_address.parse().expect("Invalid Address");
+    let nft_details = match get_nft_portfolio_data(address, request_body.chain.clone()).await {
         Ok(n) => n,
         Err(e) => return HttpResponse::BadRequest().json(json!({
             "nft_details": null,
