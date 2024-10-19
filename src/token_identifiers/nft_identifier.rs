@@ -2,22 +2,21 @@ use reqwest::Client;
 use serde_json::Value;
 use std::str::FromStr;
 use reqwest::Error;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use tokio::time::{sleep, Duration};
 use std::cmp::min;
 use web3::types::{Address};
-use crate::utils::chain_from_chain_id;
 use std::env;
 use anyhow::{Context, Result}; // Import Result from anyhow
 use dotenv::dotenv;
 
-#[derive(Debug, Deserialize)]
-struct AlchemyNftResponse {
+#[derive(Debug, Deserialize, Serialize)]
+pub struct AlchemyNftResponse {
     #[serde(rename = "ownedNfts")]
     owned_nfts: Vec<Nft>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct Nft {
     contract: Contract,
     id: NftId,
@@ -28,22 +27,22 @@ struct Nft {
     contract_metadata: ContractMetadata,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct Contract {
     address: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct NftId {
     tokenId: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct Media {
     gateway: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct ContractMetadata {
     #[serde(rename = "contractDeployer")]
     contract_deployer: String,
@@ -57,20 +56,18 @@ struct ContractMetadata {
     open_sea: OpenSeaMetadata,  // New field to capture OpenSea data
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct OpenSeaMetadata {
     #[serde(rename = "collectionName")]
     collection_name: String,
     #[serde(rename = "floorPrice")]
     floor_price: Option<f64>,  // Floor price is optional, in case it's not available
 }
-#[tokio::main]
-pub async fn fetch_nft_data(chain_id: u64, owner_address: Address) -> Result<AlchemyNftResponse> {
+
+pub async fn fetch_nft_data(chain: String, owner_address: Address) -> Result<AlchemyNftResponse> {
     dotenv().ok(); // Load environment variables from the .env file
     //let api_key = "JfkCeSqLY74hGpZ28pXMa7sQg7aINFE1"; 
     //let owner_address = "0xF039fbEfBA314ecF4Bf0C32bBe85f620C8C460D2";  
-
-    let chain: String = chain_from_chain_id(chain_id).context("Failed to get chain")?;
 
     let env_var = format!("{}_RPC_URL", chain);
     let rpc_url = env::var(&env_var)
@@ -97,7 +94,7 @@ pub async fn fetch_nft_data(chain_id: u64, owner_address: Address) -> Result<Alc
         Err(anyhow::anyhow!("Request failed with status: {}", status_code)) // Return an error
     }
 }
-async fn print_nft_info(chain_id: u64,response: AlchemyNftResponse) {
+async fn print_nft_info(chain: String,response: AlchemyNftResponse) {
     for nft in response.owned_nfts {
         println!("NFT Title: {}", nft.title.unwrap_or_else(|| "Unknown Title".to_string()));
         println!("Contract Address: {}", nft.contract.address);
@@ -128,20 +125,19 @@ async fn print_nft_info(chain_id: u64,response: AlchemyNftResponse) {
         let token_id_decimal_str = token_id_decimal.to_string();
 
         // Call the async function and await the result
-        get_price_nft(chain_id,nft.contract.address, token_id_decimal_str).await;
+        get_price_nft(chain.clone(),nft.contract.address, token_id_decimal_str).await;
 
         println!("\n-----------------------\n");
     }
 }
 
-async fn get_price_nft(chain_id: u64,contract_address: String, token_id: String) -> Result<()>{
+async fn get_price_nft(chain: String,contract_address: String, token_id: String) -> Result<()>{
     let api_key = "JfkCeSqLY74hGpZ28pXMa7sQg7aINFE1";
     let mut retry_count = 0;
     let max_retries = 5;
     let mut delay = 2; // Start with a 2-second delay
     dotenv().ok(); // Load environment variables from the .env file
 
-    let chain: String = chain_from_chain_id(chain_id).context("Failed to get chain")?;
     let env_var = format!("{}_RPC_URL", chain);
     let rpc_url = env::var(&env_var)
         .context(format!("{} not set", env_var))?;

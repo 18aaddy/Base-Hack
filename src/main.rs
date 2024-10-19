@@ -2,6 +2,7 @@ use std::char::from_u32;
 
 use actix_web::{App, HttpServer};
 use actix_cors::Cors;
+use price_feeds::price_feed::fetch_token_price;
 use web3::types::{Address, U256};
 use hex;
 
@@ -33,7 +34,11 @@ async fn main() -> std::io::Result<()> {
 //     let address: Address = "0xC5f32bb698412eB964a2E29193107832c38C70F6".parse().expect("Error decoding address string");
 //     // let token_address: Address = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48".parse().expect("Error decoding address string");
 
-//     let result = match portfolio_overview::erc20_portfolio_tracker::get_erc20_portfolio_data(address, "BASE".to_string()).await {
+//     let result = match fetch_token_price("AAVE").await {
+//         Ok(r) => {println!("{:?}", r); r},
+//         Err(e) => {println!("Error: {:?}", e); Some(0f64)},
+//     };
+//     let result = match portfolio_overview::erc20_portfolio_tracker::get_base_erc20_portfolio_data(address).await {
 //         Ok(r) => r,
 //         Err(e) => {println!("Error: {:?}", e); Vec::<UserDetails>::new()},
 //     };

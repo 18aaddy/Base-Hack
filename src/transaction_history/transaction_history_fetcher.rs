@@ -1,5 +1,5 @@
 use crate::portfolio_overview::erc20_portfolio_tracker::PortfolioRequest;
-
+use std::str::FromStr;
 use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 use web3::types::U64;
@@ -11,6 +11,8 @@ use web3::{
 };
 use actix_web::{web, HttpResponse, Responder};
 use serde_json::json;
+
+use super::logs_fetcher::fetch_transaction_logs;
 
 #[derive(Serialize, Deserialize)]
 pub struct Transaction {
@@ -51,15 +53,24 @@ pub async fn fetch_transaction_history(address: Address, chain: String) -> Resul
     let rpc_url = env::var(env_var.clone()).expect(format!("{} not set", env_var).as_str());
     let transport = Http::new(&rpc_url)?;
     let web3 = Web3::new(transport);
+    let transfer_event_signature =
+        H256::from_str("0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef")
+            .unwrap();
 
     let filter = FilterBuilder::default()
         .address(vec![address])
+        .topics(
+            Some(vec![transfer_event_signature]), // Filter by Transfer event signature
+            None,                                 // From address (optional)
+            Some(vec![H256::from(address)]),                                 // To address (optional)
+            None,                                 // Token amount or tokenId (optional)
+        )
         .from_block(web3::types::BlockNumber::Earliest) // Starting block
         .to_block(web3::types::BlockNumber::Latest) // Up to latest block
         .build();
 
     // Fetch logs
-    let logs: Vec<Log> = web3.eth().logs(filter).await?;
+    let logs: Vec<Log> = fetch_transaction_logs(address, chain).await?;
     let mut transactions = Vec::<Transaction>::new();
 
     // Process logs

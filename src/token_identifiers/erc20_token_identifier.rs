@@ -8,14 +8,16 @@ use std::env;
 use hex;
 use std::str::FromStr;
 use web3::contract::{Contract, Options};
+use crate::price_feeds::price_feed::{self, portfolio_value};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Default)]
 pub struct UserDetails {
     pub chain: String,
     pub token_name: String,
     pub token_symbol: String,
     pub token_decimals: u8,
     pub token_balance: U256,
+    pub token_price: Option<f64>,
 }
 
 const ABI: &str = r#"[
@@ -31,18 +33,25 @@ const POLYGON_ABI: &str = "";
 
 pub async fn get_user_details(address_list: Vec<H160>, user_address: Address, chain: String) -> web3::Result<Vec<UserDetails>> {
     let mut user_details = Vec::<UserDetails>::new();
-    for address in address_list {
+
+    for address in address_list.clone() {
         let (name, symbol, decimals, balance) = match get_erc20_info(address, user_address, chain.clone()).await {
             Ok((n,s,d,b)) => (n,s,d,b),
             Err(e) => return Err(web3::error::Error::from(e.to_string())),
         };
-        
+
+        let price = match price_feed::fetch_token_price(symbol.as_str()).await {
+            Ok(p) => p,
+            Err(e) => return Err(web3::error::Error::from(e.to_string())),
+        };
+
         user_details.push(UserDetails {
             chain: chain.clone(),
             token_name: name,
             token_symbol: symbol,
             token_decimals: decimals,
             token_balance: balance,
+            token_price: price,
         });
     }
     Ok(user_details)
