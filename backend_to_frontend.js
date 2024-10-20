@@ -66,8 +66,8 @@ makeRequest();
 method = "erc721"
 
 request = {
-    user_address: userAddress,
-    chain: "ETHEREUM",
+    user_address: "0x439c36f21d961Dc81Bfb39331845FbDC8C9E8be8",
+    chain: "BASE",
 }
 
 async function makeNftRequest() {

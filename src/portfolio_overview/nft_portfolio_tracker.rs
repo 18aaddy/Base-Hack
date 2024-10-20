@@ -6,6 +6,8 @@ use anyhow::{Context,Result};
 use crate::token_identifiers::nft_identifier;
 use crate::portfolio_overview::erc20_portfolio_tracker::PortfolioRequest;
 
+use super::nft_base_portfolio_tracker;
+
 #[derive(Serialize)]
 struct NftResponse {
     nft_details: Option<Vec<nft_identifier::NftSummary>>,
@@ -29,6 +31,48 @@ pub async fn web_route_erc721(request_body: web::Json<PortfolioRequest>) -> impl
     HttpResponse::Ok().json(result)
 }
 pub async fn get_nft_portfolio_data(user_address: &str, chain: String) -> Result<Vec<nft_identifier::NftSummary>> {
+    if chain=="BASE" {
+        let nft_response = nft_base_portfolio_tracker::base_fetch_nft_data( user_address)
+        .await
+        .context("Failed to fetch NFT data")?;
+
+    // Fetch the summaries
+    let nft_summaries = nft_base_portfolio_tracker::base_fetch_nft_summary( &nft_response)
+        .await
+        .context("Failed to fetch NFT summaries")?;
+
+    // Print each NFT summary
+    for nft_summary in &nft_summaries {
+        println!("{:#?}", nft_summary);
+    }
+
+    // Return the list of summaries
+    Ok(nft_summaries)
+    }
+    else {
+        let nft_response = nft_identifier::fetch_nft_data(chain.clone(), user_address)
+            .await
+            .context("Failed to fetch NFT data")?;
+
+    // Fetch the summaries
+        let nft_summaries = nft_identifier::fetch_nft_summary(chain.clone(), &nft_response)
+            .await
+            .context("Failed to fetch NFT summaries")?;
+
+    // Print each NFT summary
+        for nft_summary in &nft_summaries {
+            println!("{:#?}", nft_summary);
+        }
+
+    // Return the list of summaries
+        Ok(nft_summaries)
+    }
+        
+    // Fetch the NFT data
+
+}
+/* 
+pub async fn get_nft_portfolio_data(user_address: &str, chain: String) -> Result<Vec<nft_identifier::NftSummary>> {
     // Fetch the NFT data
     let nft_response = nft_identifier::fetch_nft_data(chain.clone(), user_address)
         .await
@@ -47,6 +91,7 @@ pub async fn get_nft_portfolio_data(user_address: &str, chain: String) -> Result
     // Return the list of summaries
     Ok(nft_summaries)
 }
+*/
 /*
 pub async fn get_nft_portfolio_data(user_address: Address, chain: String) -> Result<nft_identifier::AlchemyNftResponse> {
     let result = match nft_identifier::fetch_nft_data(chain, user_address).await {
