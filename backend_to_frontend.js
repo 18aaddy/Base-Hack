@@ -99,7 +99,7 @@ async function makeNftRequest() {
         nft1_name = nft1.name
         nft1_symbol = nft1.symbol
         nft1_description = nft1.description
-        nft1_mediaUrls = nft1.media_urls
+        nft1_mediaUrls = nft1.media_urls[0]
         nft1_collectionName = nft1.collection_name
         nft1_floorPriceEth = nft1.floor_price_eth
         nft1_lastTradedPriceUsd = nft1.last_traded_price_usd
@@ -145,7 +145,7 @@ async function makeTransactionRequest() {
 
         // Example Transaction Data
         complete_array_of_transaction_details = data.transaction_details
-        
+
         transaction1 = data.transaction_details[0]
         transaction1_from = transaction1.from
         transaction1_to = transaction1.to
