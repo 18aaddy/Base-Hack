@@ -54,7 +54,7 @@ pub async fn get_user_details(address_list: Vec<H160>, user_address: Address, ch
             token_price: price,
         });
     }
-        let eth_amount = get_eth_amount_of_user(user_address, chain.clone()).await?;
+        let eth_amount = get_eth_amount_of_user(user_address, "ETHEREUM".to_string()).await?;
         let eth_price = match price_feed::fetch_token_price("ETH").await {
             Ok(p) => p,
             Err(e) => return Err(web3::error::Error::from(e.to_string())),
@@ -68,7 +68,7 @@ pub async fn get_user_details(address_list: Vec<H160>, user_address: Address, ch
             token_price: eth_price,
         });
 
-        let base_eth_amount = get_eth_amount_of_user(user_address, chain.clone()).await?;
+        let base_eth_amount = get_eth_amount_of_user(user_address, "BASE".to_string()).await?;
         let base_eth_price = match price_feed::fetch_token_price("ETH").await {
             Ok(p) => p,
             Err(e) => return Err(web3::error::Error::from(e.to_string())),
