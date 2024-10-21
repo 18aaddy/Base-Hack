@@ -2,7 +2,7 @@ use crate::token_identifiers::erc20_token_identifier;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::error::Error;
-use web3::types::{Address, CallRequest, H160, U256};
+use web3::types::{Address, H160};
 #[derive(Deserialize, Serialize)]
 pub struct PriceResponse {
     pub USD: Option<f64>, // or U256 if you prefer to handle it as a big integer
@@ -43,8 +43,8 @@ pub async fn fetch_token_price(token_symbol: &str) -> Result<Option<f64>, Box<dy
     } 
     Ok(None)
 }
-pub async fn portfolio_value(address_list: Vec<H160>, user_address: Address, chain: String) -> Result<f64, Box<dyn std::error::Error>> {
-    let user_details = erc20_token_identifier::get_user_details(address_list, user_address, chain).await?;
+pub async fn portfolio_value(rpc_url: &String, address_list: Vec<H160>, user_address: Address, chain: String) -> Result<f64, Box<dyn std::error::Error>> {
+    let user_details = erc20_token_identifier::get_user_details(rpc_url, address_list, user_address, chain).await?;
     let mut portfolio_value_user = 0.0;
 
     for user in user_details {

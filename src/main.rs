@@ -1,10 +1,10 @@
-use std::char::from_u32;
+// use std::char::from_u32;
 
 use actix_web::{App, HttpServer};
 use actix_cors::Cors;
-use price_feeds::price_feed::fetch_token_price;
-use web3::types::{Address, U256};
-use hex;
+// use price_feeds::price_feed::fetch_token_price;
+// use web3::types::{Address, U256};
+// use hex;
 
 mod database;
 mod transaction_history;
@@ -13,8 +13,8 @@ mod token_identifiers;
 mod portfolio_overview;
 mod routes;
 
-use transaction_history::logs_fetcher;
-use token_identifiers::erc20_token_identifier::{self, UserDetails};
+// use transaction_history::logs_fetcher;
+// use token_identifiers::erc20_token_identifier::{self, UserDetails};
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     println!("Started server at 127.0.0.1:8080");

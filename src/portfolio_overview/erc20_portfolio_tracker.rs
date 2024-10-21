@@ -1,3 +1,6 @@
+use std::env;
+
+use dotenv::dotenv;
 use serde::{Deserialize, Serialize};
 use web3::ethabi::Address;
 use web3::{Result, Error};
@@ -14,8 +17,13 @@ pub async fn web_route_erc20(request_body: web::Json<PortfolioRequest>) -> impl 
     let address: Address = request_body.user_address.parse().expect("Invalid Address");
     let user_details: UserDetailsResponse;
 
+    dotenv().ok();
+    let env_var = format!("{}_RPC_URL", request_body.chain.clone());
+
+    let rpc_url = env::var(env_var.clone()).expect(format!("{} not set", env_var).as_str());
+
     if request_body.chain.clone() == "ETHEREUM" {
-        user_details = match get_erc20_portfolio_data(address, request_body.chain.clone()).await {
+        user_details = match get_erc20_portfolio_data(&rpc_url, address, request_body.chain.clone()).await {
             Ok(r) => r,
             Err(e) => return HttpResponse::BadRequest().json(json!({
                 "user_details": null,
@@ -23,7 +31,7 @@ pub async fn web_route_erc20(request_body: web::Json<PortfolioRequest>) -> impl 
             })) 
         };
     } else if request_body.chain.clone() == "BASE" {
-        user_details = match get_base_erc20_portfolio_data(address).await {
+        user_details = match get_base_erc20_portfolio_data(&rpc_url, address).await {
             Ok(r) => r,
             Err(e) => return HttpResponse::BadRequest().json(json!({
                 "user_details": null,
@@ -45,7 +53,7 @@ pub async fn web_route_erc20(request_body: web::Json<PortfolioRequest>) -> impl 
     HttpResponse::Ok().json(result)
 }
 
-pub async fn get_erc20_portfolio_data(user_address: Address, chain: String) -> Result<UserDetailsResponse>{
+pub async fn get_erc20_portfolio_data(rpc_url: &String, user_address: Address, chain: String) -> Result<UserDetailsResponse>{
     let logs = match logs_fetcher::fetch_transaction_logs(user_address, chain.clone()).await{
         Ok(l) => {println!("Fetched transaction logs"); l},
         Err(e) => return Err(Error::from(e.to_string())),
@@ -66,8 +74,8 @@ pub async fn get_erc20_portfolio_data(user_address: Address, chain: String) -> R
         Err(e) => return Err(Error::from(e.to_string())),
     };
 
-    let user_details = erc20_token_identifier::get_user_details(token_contract_address_list.clone(), user_address, chain.clone()).await?;
-    let user_portfolio_value = portfolio_value(token_contract_address_list, user_address, chain).await.unwrap();
+    let user_details = erc20_token_identifier::get_user_details(rpc_url, token_contract_address_list.clone(), user_address, chain.clone()).await?;
+    let user_portfolio_value = portfolio_value(rpc_url, token_contract_address_list, user_address, chain).await.unwrap();
 
     println!("Got user details");
     
@@ -77,11 +85,11 @@ pub async fn get_erc20_portfolio_data(user_address: Address, chain: String) -> R
     })
 }
 
-pub async fn get_base_erc20_portfolio_data(user_address: Address) -> Result<UserDetailsResponse>{
+pub async fn get_base_erc20_portfolio_data(rpc_url: &String, user_address: Address) -> Result<UserDetailsResponse>{
     let contract_address_list = token_contract_addresses::make_contract_address_list(token_contract_addresses::BASE_HEX_ADDRESS_LIST.to_vec());
 
-    let user_details = erc20_token_identifier::get_user_details(contract_address_list.clone(), user_address, "BASE".to_string()).await?;
-    let user_portfolio_value = portfolio_value(contract_address_list, user_address, "BASE".to_string()).await.unwrap();
+    let user_details = erc20_token_identifier::get_user_details(rpc_url, contract_address_list.clone(), user_address, "BASE".to_string()).await?;
+    let user_portfolio_value = portfolio_value(rpc_url, contract_address_list, user_address, "BASE".to_string()).await.unwrap();
     
     println!("Got user details");
     

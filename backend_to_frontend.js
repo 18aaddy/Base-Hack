@@ -63,54 +63,54 @@ async function makeRequest() {
 // Call the async function
 makeRequest();
 
-method = "erc721"
+// method = "erc721"
 
-request = {
-    user_address: "0x439c36f21d961Dc81Bfb39331845FbDC8C9E8be8",
-    chain: "BASE",
-}
+// request = {
+//     user_address: "0x439c36f21d961Dc81Bfb39331845FbDC8C9E8be8",
+//     chain: "BASE",
+// }
 
-async function makeNftRequest() {
-    try {
-        const response = await fetch(`http://${LOCALHOST}:${port}/${method}`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(request),
-        });
+// async function makeNftRequest() {
+//     try {
+//         const response = await fetch(`http://${LOCALHOST}:${port}/${method}`, {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify(request),
+//         });
 
-        if (!response.ok) {
-            return response.json().then(errData => {
-                // Log the error data for debugging
-                console.error('Error Data:', errData);
+//         if (!response.ok) {
+//             return response.json().then(errData => {
+//                 // Log the error data for debugging
+//                 console.error('Error Data:', errData);
 
-                // Throw an error with a more descriptive message
-                throw new Error(errData.message || 'Unknown error occurred');
-            });
-        }
+//                 // Throw an error with a more descriptive message
+//                 throw new Error(errData.message || 'Unknown error occurred');
+//             });
+//         }
 
-        const data = await response.json();  // Parse response as JSON
-        console.log("Response data:", data);  // Log the response data
-        console.log("NFT urls:", data.nft_details[0].media_urls);  // Log the response data
+//         const data = await response.json();  // Parse response as JSON
+//         console.log("Response data:", data);  // Log the response data
+//         console.log("NFT urls:", data.nft_details[0].media_urls);  // Log the response data
 
-        // Example NFT Data
-        nft1 = data.nft_details[0]
-        nft1_name = nft1.name
-        nft1_symbol = nft1.symbol
-        nft1_description = nft1.description
-        nft1_mediaUrls = nft1.media_urls[0]
-        nft1_collectionName = nft1.collection_name
-        nft1_floorPriceEth = nft1.floor_price_eth
-        nft1_lastTradedPriceUsd = nft1.last_traded_price_usd
+//         // Example NFT Data
+//         nft1 = data.nft_details[0]
+//         nft1_name = nft1.name
+//         nft1_symbol = nft1.symbol
+//         nft1_description = nft1.description
+//         nft1_mediaUrls = nft1.media_urls[0]
+//         nft1_collectionName = nft1.collection_name
+//         nft1_floorPriceEth = nft1.floor_price_eth
+//         nft1_lastTradedPriceUsd = nft1.last_traded_price_usd
 
-        // console.log(nft1_name,nft1_symbol,nft1_description,nft1_mediaUrls,nft1_collectionName,nft1_floorPriceEth,nft1_lastTradedPriceUsd)
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-    }
-}
+//         // console.log(nft1_name,nft1_symbol,nft1_description,nft1_mediaUrls,nft1_collectionName,nft1_floorPriceEth,nft1_lastTradedPriceUsd)
+//     } catch (error) {
+//         console.error('There was a problem with the fetch operation:', error);
+//     }
+// }
 
-makeNftRequest();
+// makeNftRequest();
 
 method = "transaction-history"
 
